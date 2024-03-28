@@ -96,7 +96,7 @@ cd SDXL
 python generate.py
 ```
 
-Pixart-Alpha w/ TGATE: generate an image with the caption: "A alpaca made of colorful building blocks, cyberpunk." 
+Pixart-Alpha w/ TGATE: generate an image with the caption: "An alpaca made of colorful building blocks, cyberpunk." 
 
 ```
 cd PixArt_alpha
