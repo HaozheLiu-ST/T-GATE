@@ -13,7 +13,13 @@
 
 * Technical Report will come soon.
 
+## Major Features 
 
+* Training-Free.
+* Easily Integrate into Existing Frameworks.
+* Only a few lines of code are required.
+* Friendly support CNN-based U-Net, Transformer and Consistency Model
+  
 ## Key Observation
 
 ![](./src/observation.png)
