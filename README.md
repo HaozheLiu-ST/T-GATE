@@ -50,7 +50,7 @@ if cross_attn and (gate_step<cur_step):
     hidden_states = cache
 ```
 
-## Results
+## 📄 Results
 | Model                 | MACs     | Param     | Latency | Zero-shot 10K-FID on COCO |
 |-----------------------|----------|-----------|---------|---------------------------|
 | SD-1.5                | 16.938T  | 859.520M  | 7.032s  | 23.927                    |
