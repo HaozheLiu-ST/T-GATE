@@ -9,9 +9,11 @@
 
 ## 📄 Updates
 
-* Code will released soon. 
+* Code will release soon. 
 
 * Technical Report will come soon.
+  
+* 2024/03/28: TGATE is open source.
 
 ## 🚀 Major Features 
 
