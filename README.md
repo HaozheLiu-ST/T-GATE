@@ -13,7 +13,7 @@
 
 * Technical Report will come soon.
   
-* 2024/03/28: LCM (SD-XL) w/ TGATE is open source.
+* 2024/03/29: LCM (SD-XL) w/ TGATE is open source.
   
 * 2024/03/28: TGATE is open source.
 
