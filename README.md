@@ -66,8 +66,9 @@ if cross_attn and (gate_step<cur_step):
 | Pixart-Alpha          | 107.031T | 611.350M  | 61.502s | 38.669                    |
 | Pixart-Alpha w/ TGATE | 70.225T  | 462.585M  | 40.648s | 35.726                    |
 | LCM (SD-XL)           | 11.955T  | 2.570B    | 3.805s  | 25.044                    |
-| LCM w/ TGATE          | 11.171T  | 2.024B    | 3.533s  | 24.595                    |
-
+| LCM w/ TGATE          | 11.171T  | 2.024B    | 3.533s  | 25.028                    |
+| LCM (Pixart-Alpha)    | 8.563T   | 611.350M  | 4.733s  | 36.086                    |
+| LCM w/ TGATE          | 7.623T   | 462.585M  | 4.543s  | 37.048                    |
 ## 🛠️ Requirements 
 
 * diffusers==0.27.0.dev0
