@@ -12,8 +12,10 @@
 * Code will release soon. 
 
 * Technical Report will come soon.
-  
-* 2024/03/29: TGATE for LCM (SD-XL), PixArt-Alpha is open source.
+
+* 2024/03/30: TGATE for SD-1.5/2.1/XL is released.
+
+* 2024/03/29: TGATE for LCM (SD-XL), PixArt-Alpha is released.
   
 * 2024/03/28: TGATE is open source.
 
