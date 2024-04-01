@@ -87,6 +87,22 @@ The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 
 ## 🌟 Usage
 
+To use TGATE for accelerating the denoising process, you can simply use `main.py`. For example,
+```
+python main.py \
+--prompt 'your prompt (str)' \
+--model ['pixart','sd_xl','sd_2.1','sd_1.5','lcm_sdxl','lcm_pixart'] \
+--gate_step 10 \ 
+--saved_path 'file/to/save' \
+--inference_step 25 \
+```
+For LCMs, `gate_step` is set as 1 or 2, and `inference step` is set as 4.
+After running, a generated image will be collected at 'file/to/save/test.png'.
+
+### Exapmles
+
+For easy utilization, each sub folder can run independently. 
+
 SD-1.5 w/ TGATE: generate an image with the caption: "A coral reef bustling with diverse marine life." 
 
 ```
