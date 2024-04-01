@@ -47,6 +47,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
+    os.makedirs(args.saved_path, exist_ok=True)
     saved_path = os.path.join(args.saved_path,'test.png')
     if args.model in ['sd_2.1','sd_1.5']:
         if args.model == 'sd_1.5':
