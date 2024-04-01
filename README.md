@@ -57,7 +57,7 @@ if cross_attn and (gate_step<cur_step):
 ```
 
 ## 📄 Results
-| Model                 | MACs     | Param     | Latency | Zero-shot 10K-FID on COCO |
+| Model                 | MACs     | Param     | Latency | Zero-shot 10K-FID on MS-COCO |
 |-----------------------|----------|-----------|---------|---------------------------|
 | SD-1.5                | 16.938T  | 859.520M  | 7.032s  | 23.927                    |
 | SD-1.5 w/ TGATE       | 9.875T   | 815.557M  | 4.313s  | 20.789                    |
@@ -71,6 +71,13 @@ if cross_attn and (gate_step<cur_step):
 | LCM w/ TGATE          | 11.171T  | 2.024B    | 3.533s  | 25.028                    |
 | LCM (Pixart-Alpha)    | 8.563T   | 611.350M  | 4.733s  | 36.086                    |
 | LCM w/ TGATE          | 7.623T   | 462.585M  | 4.543s  | 37.048                    |
+
+The latency is tested on a 1080ti commercial card. 
+
+The MACs and Params is calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
+
+The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
+
 ## 🛠️ Requirements 
 
 * diffusers==0.27.0.dev0
@@ -145,5 +152,3 @@ Compared with Adaptive Guidance:
 ## Acknowledgment 
 
 * We thank [prompt to prompt](https://github.com/google/prompt-to-prompt)  and [diffusers](https://huggingface.co/docs/diffusers/index) for the great code. 
-
-* The computational complexity are calculated based on [calflops](https://github.com/MrYxJ/calculate-flops.pytorch).
