@@ -9,7 +9,7 @@ import argparse
 import torch
 import os
 def parse_args():
-    parser = argparse.ArgumentParser(description="Simple example of a training script.")
+    parser = argparse.ArgumentParser(description="Simple example of TGATE.")
     parser.add_argument(
         "--prompt",
         type=str,
