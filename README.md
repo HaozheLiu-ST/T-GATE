@@ -1,5 +1,7 @@
 # TGATE: Cross-Attention Makes Text-Conditional Diffusion Inference Cumbersome
 
+![](./src/teaser.png)
+
 ## 🥳 Quick Introduction
 
 > We find that cross-attention outputs converge to a fixed point during the initial denoising steps. Consequently, the entire inference process can be divided into two stages: an initial semantics-planning phase, during which the model relies on text to plan visual semantics, and a subsequent fidelity-improving phase, during which the model tries to generate images from previously planned semantics. Surprisingly, ignoring text conditions in the fidelity-improving stage not only reduces computation complexity, but also slightly increases model performance. This yields a simple and training-free method called TGATE for efficient generation, which caches the cross-attention output once it converges and keeps it fixed during the remaining inference steps. 
