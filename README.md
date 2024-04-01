@@ -66,7 +66,7 @@ if cross_attn and (gate_step<cur_step):
 | SD-XL                 | 149.438T | 2.570B    | 53.187s | 24.628                    |
 | SD-XL w/ TGATE        | 84.438T  | 2.024B    | 27.932s | 22.738                    |
 | Pixart-Alpha          | 107.031T | 611.350M  | 61.502s | 38.669                    |
-| Pixart-Alpha w/ TGATE | 70.225T  | 462.585M  | 40.648s | 35.726                    |
+| Pixart-Alpha w/ TGATE | 65.318T  | 462.585M  | 37.867s | 35.825                    |
 | LCM (SD-XL)           | 11.955T  | 2.570B    | 3.805s  | 25.044                    |
 | LCM w/ TGATE          | 11.171T  | 2.024B    | 3.533s  | 25.028                    |
 | LCM (Pixart-Alpha)    | 8.563T   | 611.350M  | 4.733s  | 36.086                    |
