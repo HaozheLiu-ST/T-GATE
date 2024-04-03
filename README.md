@@ -1,4 +1,4 @@
-# TGATE: Cross-Attention Makes Text-Conditional Diffusion Inference Cumbersome
+# TGATE: Cross-Attention Makes Inference Cumbersome
 
 ![](./src/teaser.png)
 
