@@ -151,7 +151,7 @@ We encourage the users to read [DeepCache](https://arxiv.org/pdf/2312.00858.pdf)
 
 | Methods           | U-Net   | Transformer | Consistency Model |
 |-------------------|---------|-------------|-------------------|
-| DeepCache         | &check; | &cross;     | &check;           |
+| DeepCache         | &check; | &cross;     | -                 |
 | Adaptive Guidance | &check; | &check;     | &cross;           |
 | TGATE (Ours)      | &check; | &check;     | &check;           |
 
