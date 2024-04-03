@@ -1,6 +1,5 @@
 <div align="center">
-<h1>T-GATE🥳</h1>
-<h3>Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models</h3>  
+<h2>T-GATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models🥳</h2>  
 
 [Wentian Zhang](https://wentianzhang-ml.github.io/)<sup></sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>3</sup>&nbsp; 
 
