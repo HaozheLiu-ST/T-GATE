@@ -23,7 +23,7 @@
 
 ## 📄 Updates
 
-* Code will release soon. 
+* Code will be released soon. 
 
 * Technical Report will come soon.
 
