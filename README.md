@@ -2,14 +2,14 @@
 <h1>T-GATE🥳</h1>
 <h2>Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models</h2>
 
-[Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>*</sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1*</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2*</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>3</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>13</sup>&nbsp; 
+[Wentian Zhang](https://wentianzhang-ml.github.io/)<sup></sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>3</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>13</sup>&nbsp; 
 
 <sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp; 
 <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA
 
 ![](./src/teaser.png)
 
-## 🥳 Quick Introduction
+## Quick Introduction
 
 > We find that cross-attention outputs converge to a fixed point during the initial denoising steps. Consequently, the entire inference process can be divided into two stages: an initial semantics-planning phase, during which the model relies on text to plan visual semantics, and a subsequent fidelity-improving phase, during which the model tries to generate images from previously planned semantics. Surprisingly, ignoring text conditions in the fidelity-improving stage not only reduces computation complexity, but also slightly increases model performance. This yields a simple and training-free method called TGATE for efficient generation, which caches the cross-attention output once it converges and keeps it fixed during the remaining inference steps. 
 
