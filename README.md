@@ -1,4 +1,9 @@
-# TGATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models
+<div align="center">
+<h2>TGATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models</h2>
+
+[Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>*</sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1*</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2*</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>3</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>13</sup>&nbsp; 
+
+<sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp; <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> Swiss AI Lab, IDSIA
 
 ![](./src/teaser.png)
 
