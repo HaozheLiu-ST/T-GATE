@@ -96,7 +96,7 @@ python main.py \
 --model ['pixart','sd_xl','sd_2.1','sd_1.5','lcm_sdxl','lcm_pixart'] \
 --gate_step 10 \ 
 --saved_path 'file/to/save' \
---inference_step 25 \
+--inference_step 25
 ```
 For LCMs, `gate_step` is set as 1 or 2, and `inference step` is set as 4.
 After running, a generated image will be collected at 'file/to/save/test.png'.
