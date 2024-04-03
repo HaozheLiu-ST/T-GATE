@@ -1,4 +1,4 @@
-# TGATE: Cross-Attention Makes Inference Cumbersome
+# TGATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models
 
 ![](./src/teaser.png)
 
