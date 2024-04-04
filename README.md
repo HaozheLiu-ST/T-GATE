@@ -190,4 +190,15 @@ Compared with Adaptive Guidance:
 
 ## Acknowledgment 
 
-* We thank [prompt to prompt](https://github.com/google/prompt-to-prompt)  and [diffusers](https://huggingface.co/docs/diffusers/index) for the great code. 
+* We thank [prompt to prompt](https://github.com/google/prompt-to-prompt)  and [diffusers](https://huggingface.co/docs/diffusers/index) for the great code.
+
+## Citation
+If you find our work inspiring or use our codebase in your research, please consider giving a star ⭐ and a citation.
+```
+@article{tgate,
+  title={Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models},
+  author={Wentian Zhang and Haozhe Liu and Jinheng Xie and Francesco Faccio and Mike Zheng Shou and Jürgen Schmidhuber}
+  journal={arXiv preprint arXiv:2404.02747},
+  year={2024}
+}
+```
