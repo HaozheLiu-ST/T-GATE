@@ -28,6 +28,7 @@
 * Easily Integrate into Existing Frameworks.
 * Only a few lines of code are required.
 * Friendly support CNN-based U-Net, Transformer, and Consistency Model
+* 10%-50% speed up for different diffusion models. 
 
   
 ## 📄 Updates
