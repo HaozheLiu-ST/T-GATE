@@ -90,6 +90,8 @@ if cross_attn and (gate_step<cur_step):
 | LCM w/ TGATE          | 11.171T  | 2.024B    | 3.533s  | 25.028                    |
 | LCM (Pixart-Alpha)    | 8.563T   | 611.350M  | 4.733s  | 36.086                    |
 | LCM w/ TGATE          | 7.623T   | 462.585M  | 4.543s  | 37.048                    |
+| DeepCache (SD-XL)     | 57.888T  | -         | 19.931s | 23.755                    |
+| DeepCache w/ TGATE    | 43.868T  | -         | 14.666s | 23.999                    |
 
 The latency is tested on a 1080ti commercial card. 
 
