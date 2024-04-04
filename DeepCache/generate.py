@@ -1,5 +1,5 @@
 import torch
-from DeepCache.sdxl.pipeline_stable_diffusion_xl import StableDiffusionXLPipeline as DeepCacheStableDiffusionXLPipeline
+from sdxl.pipeline_stable_diffusion_xl import StableDiffusionXLPipeline as DeepCacheStableDiffusionXLPipeline
 
 model = "stabilityai/stable-diffusion-xl-base-1.0"
 gate_idx = 4
