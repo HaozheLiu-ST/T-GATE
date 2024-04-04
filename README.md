@@ -23,9 +23,9 @@
 
 ## 📄 Updates
 
-* Code will be released soon. 
 
-* Technical Report will come soon.
+
+* 2024/04/04: Technical Report is released on [arxiv](https://arxiv.org/abs/2404.02747). 
 
 * 2024/03/30: TGATE for SD-1.5/2.1/XL is released.
 
