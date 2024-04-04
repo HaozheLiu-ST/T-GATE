@@ -9,7 +9,7 @@
 
 <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA
 
-[![arXiv](https://img.shields.io/badge/arXiv-<TBD>-<COLOR>.svg)]()
+[![arXiv](https://img.shields.io/badge/arXiv-<2404.02747>-<COLOR>.svg)](https://arxiv.org/abs/2404.02747)
 </div>
 
 ![](./src/teaser.png)
