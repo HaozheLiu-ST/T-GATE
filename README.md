@@ -120,7 +120,7 @@ python main.py \
 For LCMs, `gate_step` is set as 1 or 2, and `inference step` is set as 4.
 After running, a generated image will be collected at 'file/to/save/test.png'.
 
-### Exapmles
+### Examples
 
 For easy utilization, each sub folder can run independently. 
 
