@@ -34,7 +34,7 @@
 ## 📄 Updates
 
 
-* 2024/04/04: Technical Report is released on [arxiv](https://arxiv.org/abs/2404.02747). 
+* 2024/04/04: Technical Report is available on [arxiv](https://arxiv.org/abs/2404.02747). 
 
 * 2024/04/04: TGATE for DeepCache (SD-XL) is released.
 
