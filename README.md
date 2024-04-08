@@ -200,7 +200,7 @@ If you find our work inspiring or use our codebase in your research, please cons
 ```
 @article{tgate,
   title={Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models},
-  author={Wentian Zhang and Haozhe Liu and Jinheng Xie and Francesco Faccio and Mike Zheng Shou and Jürgen Schmidhuber}
+  author={Zhang, Wentian and Liu, Haozhe and Xie, Jinheng and Faccio, Francesco and Shou, Mike Zheng and Schmidhuber, J{\"u}rgen},
   journal={arXiv preprint arXiv:2404.02747},
   year={2024}
 }
