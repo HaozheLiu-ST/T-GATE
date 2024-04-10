@@ -30,7 +30,7 @@ pip install tgate
 
 * pytorch>=2.0.0
 * diffusers>=0.27.2
-* transformers>=4.37.2
+* transformers==4.37.2
 * DeepCache==0.1.1
 
 ### 🌟 Usage
