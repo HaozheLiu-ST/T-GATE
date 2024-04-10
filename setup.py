@@ -22,6 +22,7 @@ setuptools.setup(
         "transformers",
         "DeepCache==0.1.1",
         "torch",
+        "accelerate",
     ],
     python_requires='>=3.8.0',
 )
