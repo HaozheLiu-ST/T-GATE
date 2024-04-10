@@ -9,7 +9,19 @@
 
 <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA
 
-[![arXiv](https://img.shields.io/badge/arXiv-<2404.02747>-<COLOR>.svg)](https://arxiv.org/abs/2404.02747)
+<p align="center">
+<a href="https://github.com/HaozheLiu-ST/T-GATE/blob/main/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/HaozheLiu-ST/T-GATE.svg?color=blue"> 
+
+<a href="https://github.com/HaozheLiu-ST/T-GATE/releases">
+    <img alt="GitHub release" src="https://img.shields.io/github/release/HaozheLiu-ST/T-GATE.svg">
+</a>
+    
+<a href="https://arxiv.org/abs/2404.02747">
+  <img alt="arxiv" src="https://img.shields.io/badge/arXiv-<2404.02747>-<COLOR>.svg">
+</a>
+</p>
+
 </div>
 
 ![](./src/teaser.png)
