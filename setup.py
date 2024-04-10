@@ -18,10 +18,10 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "torch>=2.0",
-        "diffusers>=0.27.2",
-        "transformers>=4.37.2",
-        "DeepCache",
+        "diffusers",
+        "transformers",
+        "DeepCache==0.1.1",
+        "torch",
     ],
     python_requires='>=3.8.0',
 )
