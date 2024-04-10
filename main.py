@@ -2,7 +2,8 @@ import argparse
 import os
 
 import torch
-from src.tgate import TgateSDXLLoader,TgatePixArtLoader,TgateSDLoader,TgateSDDeepCacheLoader,TgateSDXLDeepCacheLoader
+
+from tgate import TgateSDXLLoader,TgatePixArtLoader,TgateSDLoader,TgateSDDeepCacheLoader,TgateSDXLDeepCacheLoader
 from diffusers import PixArtAlphaPipeline,StableDiffusionXLPipeline,StableDiffusionPipeline
 from diffusers import UNet2DConditionModel, LCMScheduler
 from diffusers import DPMSolverMultistepScheduler
@@ -106,10 +107,11 @@ if __name__ == '__main__':
         pipe = PixArtAlphaPipeline.from_pretrained("PixArt-alpha/PixArt-LCM-XL-2-1024-MS", torch_dtype=torch.float16)
         pipe = TgatePixArtLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step,lcm=True)
         pipe = pipe.to("cuda")
-        image = pipe(args.prompt,
-                     gate_step=args.gate_step,
-                     num_inference_steps=args.inference_step,
-                     guidance_scale=0.).images[0]
+        image = pipe.tgate(
+            args.prompt,
+            gate_step=args.gate_step,
+            num_inference_steps=args.inference_step,
+            guidance_scale=0.).images[0]
 
 
     elif args.model == 'lcm_sdxl':
@@ -125,8 +127,10 @@ if __name__ == '__main__':
         pipe = TgateSDXLLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step,lcm=True)
         pipe = pipe.to("cuda")
 
-        image = pipe(
-            prompt=args.prompt, num_inference_steps=args.inference_step
+        image = pipe.tgate(
+            prompt=args.prompt, 
+            gate_step=args.gate_step,
+            num_inference_steps=args.inference_step,
         ).images[0]
 
     else:
