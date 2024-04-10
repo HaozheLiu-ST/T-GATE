@@ -95,7 +95,7 @@ if cross_attn and (gate_step<cur_step):
 
 The latency is tested on a 1080ti commercial card. 
 
-The MACs and Params is calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
+The MACs and Params are calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
 
 The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 
