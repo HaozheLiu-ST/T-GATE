@@ -32,6 +32,7 @@ pip install tgate
 * diffusers>=0.27.2
 * transformers==4.37.2
 * DeepCache==0.1.1
+* accelerate
 
 ### 🌟 Usage
 
