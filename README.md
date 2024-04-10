@@ -45,6 +45,7 @@
   
 ## 📄 Updates
 
+* 2024/04/10: We release our package to [Pypi](https://pypi.org/). Check [here]((https://github.com/HaozheLiu-ST/T-GATE/tree/release-v.0.1.0)) for the usage.
 
 * 2024/04/04: Technical Report is available on [arxiv](https://arxiv.org/abs/2404.02747). 
 
