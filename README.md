@@ -28,7 +28,7 @@ pip install tgate
 
 #### Requirements
 
-* pytorch>=2.0
+* pytorch>=2.0.0
 * diffusers>=0.27.2
 * transformers>=4.37.2
 * DeepCache
