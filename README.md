@@ -20,7 +20,7 @@
 
 ### 🛠️ Installation
 
-Start by installing [TGATE](https://github.com/HaozheLiu-ST/T-GATE/tree/release-v.0.1.0):
+Start by installing [TGATE](https://github.com/HaozheLiu-ST/T-GATE/tree/releases):
 
 ```bash
 pip install tgate
