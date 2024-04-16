@@ -35,20 +35,19 @@ def parse_args():
         default=10,
         help="When re-using the cross-attention",
     )
-
     parser.add_argument(
         "--inference_step",
         type=int,
         default=25,
         help="total inference steps",
-
+    )
     parser.add_argument(
         '--deepcache', 
         action='store_true', 
         default=False, 
         help='do deep cache'
-        )
     )
+    
     args = parser.parse_args()
     return args
 
