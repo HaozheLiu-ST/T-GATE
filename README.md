@@ -183,6 +183,8 @@ cd DeepCache
 python generate.py
 ```
 
+### Third-party Usage
+- T-GATE in ComfyUI [ComfyUI_TGate](https://github.com/JettHu/ComfyUI_TGate)
 
 ##  📖 Related works: 
 
