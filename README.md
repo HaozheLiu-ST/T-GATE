@@ -45,6 +45,8 @@
   
 ## 📄 Updates
 
+* 2024/04/17: TGATE [v0.1.1](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) is officially added to [diffusers](https://huggingface.co/docs/diffusers/main/en/optimization/tgate).
+
 * 2024/04/14: We release TGATE [v0.1.1](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) to support the [`playground-v2.5-1024`](https://huggingface.co/playgroundai/playground-v2.5-1024px-aesthetic) model.
 
 * 2024/04/10: We release our package to [PyPI](https://pypi.org/project/tgate/). Check [here](https://github.com/HaozheLiu-ST/T-GATE/tree/releases) for the usage.
