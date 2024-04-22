@@ -25,7 +25,7 @@ from diffusers.pipelines.pixart_alpha.pipeline_pixart_alpha import (
     )
 
 from types import MethodType
-
+from functools import partial
 
 
 
@@ -56,6 +56,7 @@ def tgate(
     use_resolution_binning: bool = True,
     max_sequence_length: int = 120,
     gate_step: int = 8,
+    lcm: bool = False,
     **kwargs,
 ) -> Union[ImagePipelineOutput, Tuple]:
     """
@@ -127,6 +128,7 @@ def tgate(
             the requested resolution. Useful for generating non-square images.
         max_sequence_length (`int` defaults to 120): Maximum sequence length to use with the `prompt`.
         gate_step (`int` defaults to 8): The time step to stop calculating the cross attention.
+        lcm (`bool` defaults to False): If the latent consistency model is used as the transformer.
     Examples:
 
     Returns:
@@ -242,7 +244,7 @@ def tgate(
 
     with self.progress_bar(total=num_inference_steps) as progress_bar:
         for i, t in enumerate(timesteps):
-            if do_classifier_free_guidance and i < gate_step:
+            if do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 latent_model_input = torch.cat([latents] * 2)
                 prompt_embeds = cfg_prompt_embeds
                 prompt_attention_mask = cfg_prompt_attention_mask
@@ -269,6 +271,16 @@ def tgate(
             # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
             current_timestep = current_timestep.expand(latent_model_input.shape[0])
 
+            # TGATE
+            if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
+                register_tgate_forward(self.transformer, 
+                    'Attention',
+                    gate_step=gate_step,
+                    inference_num_per_image = num_inference_steps, 
+                    lcm=lcm,
+                    cur_step=i+1-num_warmup_steps,
+                    )
+
             # predict noise model_output
             noise_pred = self.transformer(
                 latent_model_input,
@@ -280,7 +292,7 @@ def tgate(
             )[0]
 
             # perform guidance
-            if do_classifier_free_guidance and i < gate_step:
+            if do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                 noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
@@ -319,12 +331,7 @@ def tgate(
     return ImagePipelineOutput(images=image)
 
 
-def TgatePixArtLoader(pipe,gate_step=8,num_inference_steps=20,lcm=False):
-    register_tgate_forward(pipe.transformer, 
-        'Attention',
-        gate_step=gate_step,
-        inference_num_per_image = num_inference_steps, 
-        lcm=lcm,
-        )
-    pipe.tgate = MethodType(tgate,pipe)
+def TgatePixArtLoader(pipe, lcm=False, **kwargs):
+    partial_tgate = partial(tgate, lcm=lcm)
+    pipe.tgate = MethodType(partial_tgate,pipe)
     return pipe
