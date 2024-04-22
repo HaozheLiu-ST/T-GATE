@@ -67,7 +67,7 @@ if __name__ == '__main__':
         if args.deepcache:
             pipe = TgateSDDeepCacheLoader(pipe,cache_interval=3,cache_branch_id=0)
         else:
-            pipe = TgateSDLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step)
+            pipe = TgateSDLoader(pipe)
         pipe = pipe.to("cuda")
 
         image = pipe.tgate(args.prompt,
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         if args.deepcache:
             pipeline_text2image = TgateSDXLDeepCacheLoader(pipeline_text2image,cache_interval=3,cache_branch_id=0)
         else:
-            pipeline_text2image = TgateSDXLLoader(pipeline_text2image,gate_step=args.gate_step, num_inference_steps=args.inference_step)
+            pipeline_text2image = TgateSDXLLoader(pipeline_text2image)
         pipeline_text2image.scheduler = DPMSolverMultistepScheduler.from_config(pipeline_text2image.scheduler.config)
         pipeline_text2image = pipeline_text2image.to("cuda")
 
@@ -94,9 +94,7 @@ if __name__ == '__main__':
                                           num_inference_steps=args.inference_step).images[0]
     elif args.model == 'pixart':
         pipe = PixArtAlphaPipeline.from_pretrained("PixArt-alpha/PixArt-XL-2-1024-MS", torch_dtype=torch.float16)
-        pipe = TgatePixArtLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step,lcm=False)
-
-        pipe = pipe.to("cuda")
+        pipe = TgatePixArtLoader(pipe).to("cuda")
         image = pipe.tgate(args.prompt,
                            gate_step=args.gate_step,
                            num_inference_steps=args.inference_step).images[0]
@@ -104,8 +102,7 @@ if __name__ == '__main__':
 
     elif args.model == 'lcm_pixart':
         pipe = PixArtAlphaPipeline.from_pretrained("PixArt-alpha/PixArt-LCM-XL-2-1024-MS", torch_dtype=torch.float16)
-        pipe = TgatePixArtLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step,lcm=True)
-        pipe = pipe.to("cuda")
+        pipe = TgatePixArtLoader(pipe,lcm=True).to("cuda")
         image = pipe.tgate(
             args.prompt,
             gate_step=args.gate_step,
@@ -123,8 +120,7 @@ if __name__ == '__main__':
             "stabilityai/stable-diffusion-xl-base-1.0", unet=unet, torch_dtype=torch.float16, variant="fp16",
         )
         pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
-        pipe = TgateSDXLLoader(pipe,gate_step=args.gate_step, num_inference_steps=args.inference_step,lcm=True)
-        pipe = pipe.to("cuda")
+        pipe = TgateSDXLLoader(pipe,lcm=True).to("cuda")
 
         image = pipe.tgate(
             prompt=args.prompt, 
