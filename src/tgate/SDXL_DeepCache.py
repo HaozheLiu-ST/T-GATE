@@ -69,7 +69,7 @@ def tgate(
     clip_skip: Optional[int] = None,
     callback_on_step_end: Optional[Callable[[int, int, Dict], None]] = None,
     callback_on_step_end_tensor_inputs: List[str] = ["latents"],
-    gate_step:int=None,
+    gate_step : int = 10,
     **kwargs,
 ):
     r"""
@@ -202,7 +202,7 @@ def tgate(
             The list of tensor inputs for the `callback_on_step_end` function. The tensors specified in the list
             will be passed as `callback_kwargs` argument. You will only be able to include variables listed in the
             `._callback_tensor_inputs` attribute of your pipeline class.
-
+        gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
     Examples:
 
     Returns:
@@ -392,15 +392,8 @@ def tgate(
             if self.interrupt:
                 continue
             
-            register_tgate_forward(self.unet, 
-                'Attention',
-                gate_step=gate_step,
-                inference_num_per_image = num_inference_steps, 
-                lcm=False,
-                cur_step=i+1
-                )
             # expand the latents if we are doing classifier free guidance
-            if self.do_classifier_free_guidance and i < gate_step:
+            if self.do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 latent_model_input = torch.cat([latents] * 2)
                 prompt_embeds = cfg_embeds
                 added_cond_kwargs = {"text_embeds": cfg_add_text_embeds, "time_ids": cfg_add_time_ids}
@@ -408,7 +401,7 @@ def tgate(
                 latent_model_input = latents
                 prompt_embeds = negative_prompt_embeds
                 added_cond_kwargs = {"text_embeds": negative_add_text_embeds, "time_ids": negative_add_time_ids}
-            if i == gate_step or i == gate_step-1:
+            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
                 self.deepcache.disable()
                 self.deepcache.enable()            
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
@@ -417,7 +410,15 @@ def tgate(
             if ip_adapter_image is not None or ip_adapter_image_embeds is not None:
                 added_cond_kwargs["image_embeds"] = image_embeds
             
-            
+            # TGATE
+            if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
+                register_tgate_forward(self.unet, 
+                    'Attention',
+                    gate_step=gate_step,
+                    inference_num_per_image = num_inference_steps, 
+                    cur_step=i+1-num_warmup_steps,
+                    )
+
             noise_pred = self.unet(
                 latent_model_input,
                 t,
@@ -429,11 +430,11 @@ def tgate(
             )[0]
 
             # perform guidance
-            if self.do_classifier_free_guidance and i < gate_step:
+            if self.do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                 noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
 
-            if self.do_classifier_free_guidance and self.guidance_rescale > 0.0 and i < gate_step:
+            if self.do_classifier_free_guidance and self.guidance_rescale > 0.0 and (i-num_warmup_steps) < gate_step:
                 # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
                 noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
 
@@ -468,40 +469,40 @@ def tgate(
         self.deepcache.disable()
         self.deepcache.enable()
 
-    if not output_type == "latent":
-        # make sure the VAE is in float32 mode, as it overflows in float16
-        needs_upcasting = self.vae.dtype == torch.float16 and self.vae.config.force_upcast
+        if not output_type == "latent":
+            # make sure the VAE is in float32 mode, as it overflows in float16
+            needs_upcasting = self.vae.dtype == torch.float16 and self.vae.config.force_upcast
 
-        if needs_upcasting:
-            self.upcast_vae()
-            latents = latents.to(next(iter(self.vae.post_quant_conv.parameters())).dtype)
-        elif latents.dtype != self.vae.dtype:
-            if torch.backends.mps.is_available():
-                # some platforms (eg. apple mps) misbehave due to a pytorch bug: https://github.com/pytorch/pytorch/pull/99272
-                self.vae = self.vae.to(latents.dtype)
+            if needs_upcasting:
+                self.upcast_vae()
+                latents = latents.to(next(iter(self.vae.post_quant_conv.parameters())).dtype)
+            elif latents.dtype != self.vae.dtype:
+                if torch.backends.mps.is_available():
+                    # some platforms (eg. apple mps) misbehave due to a pytorch bug: https://github.com/pytorch/pytorch/pull/99272
+                    self.vae = self.vae.to(latents.dtype)
 
-        # unscale/denormalize the latents
-        # denormalize with the mean and std if available and not None
-        has_latents_mean = hasattr(self.vae.config, "latents_mean") and self.vae.config.latents_mean is not None
-        has_latents_std = hasattr(self.vae.config, "latents_std") and self.vae.config.latents_std is not None
-        if has_latents_mean and has_latents_std:
-            latents_mean = (
-                torch.tensor(self.vae.config.latents_mean).view(1, 4, 1, 1).to(latents.device, latents.dtype)
-            )
-            latents_std = (
-                torch.tensor(self.vae.config.latents_std).view(1, 4, 1, 1).to(latents.device, latents.dtype)
-            )
-            latents = latents * latents_std / self.vae.config.scaling_factor + latents_mean
+            # unscale/denormalize the latents
+            # denormalize with the mean and std if available and not None
+            has_latents_mean = hasattr(self.vae.config, "latents_mean") and self.vae.config.latents_mean is not None
+            has_latents_std = hasattr(self.vae.config, "latents_std") and self.vae.config.latents_std is not None
+            if has_latents_mean and has_latents_std:
+                latents_mean = (
+                    torch.tensor(self.vae.config.latents_mean).view(1, 4, 1, 1).to(latents.device, latents.dtype)
+                )
+                latents_std = (
+                    torch.tensor(self.vae.config.latents_std).view(1, 4, 1, 1).to(latents.device, latents.dtype)
+                )
+                latents = latents * latents_std / self.vae.config.scaling_factor + latents_mean
+            else:
+                latents = latents / self.vae.config.scaling_factor
+
+            image = self.vae.decode(latents, return_dict=False)[0]
+
+            # cast back to fp16 if needed
+            if needs_upcasting:
+                self.vae.to(dtype=torch.float16)
         else:
-            latents = latents / self.vae.config.scaling_factor
-
-        image = self.vae.decode(latents, return_dict=False)[0]
-
-        # cast back to fp16 if needed
-        if needs_upcasting:
-            self.vae.to(dtype=torch.float16)
-    else:
-        image = latents
+            image = latents
 
     if not output_type == "latent":
         # apply watermark if available
