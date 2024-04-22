@@ -2,13 +2,13 @@ import setuptools
 
 setuptools.setup(
     name="tgate",
-    version="v0.1.0",
-    author=["Wentian Zhang", "Haozhe Liu", "Jinheng Xie"],
-    author_email=["zhangwentianml@gmail.com","haozhe.liu@kaust.edu.sa"],
+    version="v0.1.2",
+    author="Wentian Zhang",
+    author_email="zhangwentianml@gmail.com",
     description="T-GATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models.",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/HaozheLiu-ST/T-GATE/tree/release-v.0.1.0/",
+    url="https://github.com/HaozheLiu-ST/T-GATE/tree/releases/",
     package_dir={"": "src"},
     packages=setuptools.find_packages('src'),
     include_package_data=False,
