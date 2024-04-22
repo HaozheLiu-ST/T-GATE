@@ -7,7 +7,7 @@
 
 
 
-## 🚀 Major Features 
+## 🚀 Major Features
 
 * Training-Free.
 * Easily Integrate into [Diffusers](https://github.com/huggingface/diffusers/tree/main).
@@ -47,12 +47,7 @@ pipe = PixArtAlphaPipeline.from_pretrained("PixArt-alpha/PixArt-XL-2-1024-MS", t
 + from tgate import TgatePixArtLoader
 + gate_step = 8
 + inference_step = 25
-+ pipe = TgatePixArtLoader(
-+        pipe,
-+        gate_step=gate_step,
-+        num_inference_steps=inference_step,
-+ )
-pipe = pipe.to("cuda")
++ pipe = TgatePixArtLoader(pipe).to("cuda")
 
 + image = pipe.tgate(
 +         "An alpaca made of colorful building blocks, cyberpunk.",
@@ -78,14 +73,9 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
 + from tgate import TgateSDXLLoader
 + gate_step = 10
 + inference_step = 25
-+ pipe = TgateSDXLLoader(
-+        pipe,
-+        gate_step=gate_step,
-+        num_inference_steps=inference_step,
-+ )
++ pipe = TgateSDXLLoader(pipe).to("cuda")
 
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
-pipe = pipe.to("cuda")
 
 + image = pipe.tgate(
 +         "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k.",
@@ -115,10 +105,10 @@ pipe = StableDiffusionXLPipeline.from_pretrained(
 +        pipe,
 +        cache_interval=3,
 +        cache_branch_id=0,
-+ )
++ ).to("cuda")
 
 pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
-pipe = pipe.to("cuda")
+
 
 + image = pipe.tgate(
 +         "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k.",
@@ -151,23 +141,17 @@ pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 + from tgate import TgateSDXLLoader
 + gate_step = 1
 + inference_step = 4
-+ pipe = TgateSDXLLoader(
-+        pipe,
-+        gate_step=gate_step,
-+        num_inference_steps=inference_step,
-+        lcm=True
-+ )
-pipe = pipe.to("cuda")
++ pipe = TgateSDXLLoader(pipe,lcm=True).to("cuda")
 
 + image = pipe.tgate(
 +         "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k.",
 +         gate_step=gate_step,
-+         num_inference_steps=inference_step
++         num_inference_steps=inference_step,
 + ).images[0]
 ```
 
 TGATE also supports `StableDiffusionPipeline` and `PixArt-alpha/PixArt-LCM-XL-2-1024-MS`.
-More details can be found at [here](https://github.com/HaozheLiu-ST/T-GATE/tree/release-v.0.1.0/main.py).
+More details can be found at [here](https://github.com/HaozheLiu-ST/T-GATE/tree/releases/main.py).
 
 ## 📄 Results
 | Model                 | MACs     | Param     | Latency | Zero-shot 10K-FID on MS-COCO |
