@@ -119,6 +119,7 @@ def tgate(
             The list of tensor inputs for the `callback_on_step_end` function. The tensors specified in the list
             will be passed as `callback_kwargs` argument. You will only be able to include variables listed in the
             `._callback_tensor_inputs` attribute of your pipeline class.
+        gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
 
     Examples:
 
@@ -253,7 +254,7 @@ def tgate(
                 continue
 
             # expand the latents if we are doing classifier free guidance
-            if self.do_classifier_free_guidance and i < gate_step:
+            if self.do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 latent_model_input = torch.cat([latents] * 2) 
                 prompt_embeds = prompt_cfg_embeds
             else:
@@ -261,6 +262,14 @@ def tgate(
                 prompt_embeds = negative_prompt_embeds
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
+            # TGATE
+            if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
+                register_tgate_forward(self.unet, 
+                    'Attention',
+                    gate_step=gate_step,
+                    inference_num_per_image = num_inference_steps, 
+                    cur_step=i+1-num_warmup_steps,
+                    )
             # predict the noise residual
             noise_pred = self.unet(
                 latent_model_input,
@@ -273,11 +282,11 @@ def tgate(
             )[0]
 
             # perform guidance
-            if self.do_classifier_free_guidance and i < gate_step:
+            if self.do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                 noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
 
-            if self.do_classifier_free_guidance and self.guidance_rescale > 0.0 and i < gate_step:
+            if self.do_classifier_free_guidance and self.guidance_rescale > 0.0 and (i-num_warmup_steps) < gate_step:
                 # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
                 noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
 
@@ -328,12 +337,6 @@ def tgate(
 
 
 
-def TgateSDLoader(pipe,gate_step=8,num_inference_steps=20,lcm=False):
-    register_tgate_forward(pipe.unet, 
-        'Attention',
-        gate_step=gate_step,
-        inference_num_per_image = num_inference_steps, 
-        lcm=lcm,
-        )
+def TgateSDLoader(pipe, **kwargs):
     pipe.tgate = MethodType(tgate,pipe)
     return pipe
