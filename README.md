@@ -1,34 +1,38 @@
 <div align="center">
-<h1>T-GATE: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models 🥳</h1>  
-
-[Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>&#42;</sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1&#42;</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2&#42;</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>1,3</sup>&nbsp; 
-
-[Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>1,3</sup>&nbsp; 
-
-<sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp; 
-
-<sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA
-
-<p align="center">
-<a href="https://github.com/HaozheLiu-ST/T-GATE/blob/main/LICENSE">
+<h1>T-GATE: Temporally Gating Attention to Accelerate Diffusion Model for Free! 🥳</h1>  
+    <a href="https://github.com/HaozheLiu-ST/T-GATE/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/HaozheLiu-ST/T-GATE.svg?color=blue"> 
-
-<a href="https://github.com/HaozheLiu-ST/T-GATE/releases">
-    <img alt="GitHub release" src="https://img.shields.io/github/release/HaozheLiu-ST/T-GATE.svg">
 </a>
-    
 <a href="https://arxiv.org/abs/2404.02747">
   <img alt="arxiv" src="https://img.shields.io/badge/arXiv-<2404.02747>-<COLOR>.svg">
 </a>
-</p>
-
+<a href="https://github.com/HaozheLiu-ST/T-GATE/releases">
+    <img alt="GitHub release" src="https://img.shields.io/github/release/HaozheLiu-ST/T-GATE.svg">
+</a>
 </div>
+
+> **TGATE-V1: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models**  
+> [Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>&#42;</sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1&#42;</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2&#42;</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>1,3</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>1,3</sup>&nbsp;
+> 
+> <sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp;
+> 
+> <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA
+>
+
+> **TGATE-V2: Faster Diffusion Through Temporal Attention Decomposition**  
+> [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1&#42;</sup>&nbsp; [Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>&#42;</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2&#42;</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>1,3</sup>&nbsp; [Mengmeng Xu](https://scholar.google.com/citations?user=be_ox9QAAAAJ&hl=en)<sup>4</sup>&nbsp; [Tao Xiang](https://scholar.google.com/citations?user=MeS5d4gAAAAJ&hl=en)<sup>4</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Juan-Manuel Pérez-Rúa](https://scholar.google.com/citations?user=Vbvimu4AAAAJ&hl=en)<sup>4</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>1,3</sup>&nbsp;
+> 
+> <sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp;
+> 
+> <sup>2</sup> Show Lab, National University of Singapore &nbsp; <sup>3</sup> The Swiss AI Lab, IDSIA &nbsp; <sup>4</sup> Meta
+>
+> Code and Technical Report will be released soon!
 
 ![](./assets/teaser.png)
 
 ## Quick Introduction
 
-> We find that cross-attention outputs converge to a fixed point during the initial denoising steps. Consequently, the entire inference process can be divided into two stages: an initial semantics-planning phase, during which the model relies on text to plan visual semantics, and a subsequent fidelity-improving phase, during which the model tries to generate images from previously planned semantics. Surprisingly, ignoring text conditions in the fidelity-improving stage not only reduces computation complexity, but also slightly decreases FID score. This yields a simple and training-free method called TGATE for efficient generation, which caches the cross-attention output once it converges and keeps it fixed during the remaining inference steps. 
+> We explore the role of the attention mechanism during inference in text-conditional diffusion models. Empirical observations suggest that cross-attention outputs converge to a fixed point after several inference steps. The convergence time naturally divides the entire inference process into two phases: an initial phase for planning text-oriented visual semantics, which are then translated into images in a subsequent fidelity-improving phase. Cross-attention is essential in the initial phase but almost irrelevant thereafter. Self-attention, however, initially plays a minor role but becomes increasingly important in the second phase. These findings yield a simple and training-free method called TGATE which efficiently generates images by caching and reusing attention outputs at scheduled time steps. Experiments show TGATE’s broad applicability to various existing text-conditional diffusion models which it speeds up by 10-50%. 
 
 ![](./assets/visualization.png)
 >  The images generated by the diffusion model with or without TGATE. Our method can accelerate the diffusion model without generation performance drops. It is training-free and can be widely complementary to the existing studies.
@@ -44,6 +48,8 @@
 
   
 ## 📄 Updates
+
+* 2024/05/22: **We have successfully extended TGATE to self-attention modules for greater acceleration! Stay tuned for a major update, which will be released in the coming weeks.**
 
 * 2024/04/17: TGATE [v0.1.1](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) is officially added to [diffusers](https://huggingface.co/docs/diffusers/main/en/optimization/tgate).
 
