@@ -127,7 +127,7 @@ The FID is computed on [idx_caption.txt](https://github.com/HaozheLiu-ST/T-GATE/
 
 The latency is tested on a 1080ti commercial card and diffusers v0.28.2. 
 
-The MACs and Params are calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
+The MACs are calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
 
 The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 
