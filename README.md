@@ -123,13 +123,11 @@ if cross_attn and (gate_step<cur_step):
 | LCM (Pixart-Alpha)    | 8.563T   | 4.733s  | 35.989                    |
 | LCM w/ TGATE          | 7.623T   | 4.543s  | 35.843                    |
 
-The FID is computed on [idx_caption.txt](https://github.com/HaozheLiu-ST/T-GATE/files/15369063/idx_caption.txt).
+The FID is computed on [captions](https://github.com/HaozheLiu-ST/T-GATE/files/15369063/idx_caption.txt) by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 
 The latency is tested on a 1080ti commercial card and diffusers [v0.28.2](https://github.com/huggingface/diffusers/tree/v0.28.2). 
 
 The MACs are calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
-
-The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 
 ## 🛠️ Requirements
 
