@@ -125,7 +125,7 @@ if cross_attn and (gate_step<cur_step):
 
 The FID is computed on [idx_caption.txt](https://github.com/HaozheLiu-ST/T-GATE/files/15369063/idx_caption.txt).
 
-The latency is tested on a 1080ti commercial card and diffusers v0.28.2. 
+The latency is tested on a 1080ti commercial card and diffusers [v0.28.2](https://github.com/huggingface/diffusers/tree/v0.28.2). 
 
 The MACs are calculated by [calflops](https://github.com/MrYxJ/calculate-flops.pytorch). 
 
