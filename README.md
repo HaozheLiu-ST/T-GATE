@@ -157,7 +157,7 @@ python main.py \
 --sa_interval 5 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './sd_xl/' \
+--saved_path './generated_tmp/sd_xl/' \
 --inference_step 25 \
 ```
 
@@ -172,7 +172,7 @@ python main.py \
 --sa_interval 3 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './pixart_alpha/' \
+--saved_path './generated_tmp/pixart_alpha/' \
 --inference_step 25 \
 ```
 
@@ -186,7 +186,7 @@ python main.py \
 --sa_interval 3 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './pixart_sigma/' \
+--saved_path './generated_tmp/pixart_sigma/' \
 --inference_step 25 \
 ```
 
@@ -200,7 +200,7 @@ python main.py \
 --sa_interval 1 \
 --ca_interval 1 \
 --warm_up 0 \
---saved_path './lcm_sdxl/' \
+--saved_path './generated_tmp/lcm_sdxl/' \
 --inference_step 4 \
 ```
 
@@ -210,15 +210,17 @@ python main.py \
 ```bash
 python main.py \
 --prompt 'A haunted Victorian mansion under a full moon.' \
---model 'sd_xl' \
+--model 'sdxl' \
 --gate_step 10 \
 --sa_interval 1 \
 --ca_interval 1 \
 --warm_up 0 \
---saved_path './sd_xl_deepcache/' \
+--saved_path './generated_tmp/sd_xl_deepcache/' \
 --inference_step 25 \
 --deepcache \
 ```
+
+
 1. For LCMs, `gate_step` is set as 1 or 2, and `inference step` is set as 4.
 
 2. To use DeepCache, `deepcache` is set as True. 
