@@ -157,7 +157,7 @@ python main.py \
 --sa_interval 5 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './sd_xl.png' \
+--saved_path './sd_xl/' \
 --inference_step 25 \
 ```
 
@@ -172,7 +172,7 @@ python main.py \
 --sa_interval 3 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './pixart_alpha.png' \
+--saved_path './pixart_alpha/' \
 --inference_step 25 \
 ```
 
@@ -186,7 +186,7 @@ python main.py \
 --sa_interval 3 \
 --ca_interval 1 \
 --warm_up 2 \
---saved_path './pixart_sigma.png' \
+--saved_path './pixart_sigma/' \
 --inference_step 25 \
 ```
 
@@ -200,7 +200,7 @@ python main.py \
 --sa_interval 1 \
 --ca_interval 1 \
 --warm_up 0 \
---saved_path './lcm_sdxl.png' \
+--saved_path './lcm_sdxl/' \
 --inference_step 4 \
 ```
 
@@ -215,7 +215,7 @@ python main.py \
 --sa_interval 1 \
 --ca_interval 1 \
 --warm_up 0 \
---saved_path './sd_xl_deepcache.png' \
+--saved_path './sd_xl_deepcache/' \
 --inference_step 25 \
 --deepcache \
 ```
