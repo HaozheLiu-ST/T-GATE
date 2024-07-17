@@ -134,9 +134,9 @@ The FID is calculated by [PytorchFID](https://github.com/mseitzer/pytorch-fid).
 ## 🛠️ Requirements
 
 * pytorch>=2.0.0
-* diffusers>=0.29.2
-* transformers==4.37.2
+* diffusers>=0.29.0
 * DeepCache==0.1.1
+* transformers
 * accelerate
 
 
