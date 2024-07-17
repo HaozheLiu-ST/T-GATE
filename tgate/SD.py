@@ -1,6 +1,5 @@
 from types import MethodType
-from functools import partial
-from tgate_utils import register_forward, tgate_scheduler
+from .tgate_utils import register_forward, tgate_scheduler
 import torch
 import torch.nn.functional as F
 import inspect
@@ -366,5 +365,5 @@ def tgate(
 
 
 def TgateSDLoader(pipe, **kwargs):
-    pipe.tgate = MethodType(partial_tgate,pipe)
+    pipe.tgate = MethodType(tgate,pipe)
     return pipe

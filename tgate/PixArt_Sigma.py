@@ -1,5 +1,5 @@
 from diffusers import PixArtSigmaPipeline
-from tgate_utils import register_forward,tgate_scheduler
+from .tgate_utils import register_forward,tgate_scheduler
 import html
 import inspect
 import re

@@ -1,5 +1,5 @@
 from types import MethodType
-from tgate_utils import register_forward,tgate_schedulers
+from .tgate_utils import register_forward,tgate_scheduler
 import inspect
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional, Union

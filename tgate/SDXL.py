@@ -1,5 +1,5 @@
 from types import MethodType
-from tgate_utils import register_forward, tgate_scheduler
+from .tgate_utils import register_forward, tgate_scheduler
 import torch
 import torch.nn.functional as F
 from diffusers.image_processor import PipelineImageInput, VaeImageProcessor
