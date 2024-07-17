@@ -49,7 +49,7 @@
   
 ## 📄 Updates
 
-* 2024/07/18: We release TGATE [v1.0.0](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) to support the `PixArt-Sigma` and `StableVideoDiffusion` models.
+<!-- * 2024/07/18: We release TGATE [v1.0.0](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) to support the `PixArt-Sigma` and `StableVideoDiffusion` models. -->
 
 * 2024/05/22: We have successfully extended TGATE to self-attention modules for greater acceleration!
 
