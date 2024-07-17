@@ -144,7 +144,7 @@ python main.py \
 --prompt 'A coral reef bustling with diverse marine life.' \
 --model 'sd_2.1' \
 --gate_step 10 \ 
---saved_path './sd_2_1.png' \
+--saved_path './sd_2_1/' \
 --inference_step 25 \
 ```
 
@@ -156,7 +156,7 @@ python main.py \
 --prompt 'Astronaut in a jungle, cold color palette, muted colors, detailed, 8k' \
 --model 'sd_xl' \
 --gate_step 10 \ 
---saved_path './sd_xl.png' \
+--saved_path './sd_xl/' \
 --inference_step 25 \
 ```
 
@@ -168,7 +168,7 @@ python main.py \
 --prompt 'An alpaca made of colorful building blocks, cyberpunk.' \
 --model 'pixart' \
 --gate_step 8 \ 
---saved_path './pixart_alpha.png' \
+--saved_path './pixart_alpha/' \
 --inference_step 25 \
 ```
 
@@ -179,7 +179,7 @@ python main.py \
 --prompt 'Self-portrait oil painting, a beautiful cyborg with golden hair, 8k' \
 --model 'lcm_sdxl' \
 --gate_step 1 \ 
---saved_path './lcm_sdxl.png' \
+--saved_path './lcm_sdxl/' \
 --inference_step 4 \
 ```
 
@@ -191,7 +191,7 @@ python main.py \
 --prompt 'A haunted Victorian mansion under a full moon.' \
 --model 'sd_xl' \
 --gate_step 10 \ 
---saved_path './sd_xl_deepcache.png' \
+--saved_path './sd_xl_deepcache/' \
 --inference_step 25 \
 --deepcache \
 ```
