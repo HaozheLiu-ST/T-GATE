@@ -1,4 +1,4 @@
-from diffusers import PixArtAlphaPipeline
+from diffusers import PixArtSigmaPipeline
 from tgate_utils import register_forward,tgate_scheduler
 import html
 import inspect
@@ -17,15 +17,17 @@ from diffusers.utils import (
     replace_example_docstring,
 )
 from diffusers.pipelines.pixart_alpha.pipeline_pixart_alpha import (
-    ASPECT_RATIO_1024_BIN,
-    ASPECT_RATIO_512_BIN,
     ASPECT_RATIO_256_BIN,
+    ASPECT_RATIO_512_BIN,
+    ASPECT_RATIO_1024_BIN,
+    )
+from diffusers.pipelines.pixart_alpha.pipeline_pixart_sigma import (
+    ASPECT_RATIO_2048_BIN,
     EXAMPLE_DOC_STRING,
     retrieve_timesteps
     )
 
 from types import MethodType
-
 
 @torch.no_grad()
 @replace_example_docstring(EXAMPLE_DOC_STRING)
@@ -53,7 +55,7 @@ def tgate(
     callback_steps: int = 1,
     clean_caption: bool = True,
     use_resolution_binning: bool = True,
-    max_sequence_length: int = 120,
+    max_sequence_length: int = 300,
     gate_step: int = 10,
     sa_interval: int = 5,
     ca_interval: int = 1,
@@ -110,7 +112,7 @@ def tgate(
             provided, text embeddings will be generated from `prompt` input argument.
         prompt_attention_mask (`torch.Tensor`, *optional*): Pre-generated attention mask for text embeddings.
         negative_prompt_embeds (`torch.Tensor`, *optional*):
-            Pre-generated negative text embeddings. For PixArt-Alpha this negative prompt should be "". If not
+            Pre-generated negative text embeddings. For PixArt-Sigma this negative prompt should be "". If not
             provided, negative_prompt_embeds will be generated from `negative_prompt` input argument.
         negative_prompt_attention_mask (`torch.Tensor`, *optional*):
             Pre-generated attention mask for negative text embeddings.
@@ -133,7 +135,7 @@ def tgate(
             If set to `True`, the requested height and width are first mapped to the closest resolutions using
             `ASPECT_RATIO_1024_BIN`. After the produced latents are decoded into images, they are resized back to
             the requested resolution. Useful for generating non-square images.
-        max_sequence_length (`int` defaults to 120): Maximum sequence length to use with the `prompt`.
+        max_sequence_length (`int` defaults to 300): Maximum sequence length to use with the `prompt`.
         gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
         sa_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step.
         ca_interval (`int` defaults to 1): The time-step interval to cache cross attention after gate_step .
@@ -146,14 +148,13 @@ def tgate(
             If `return_dict` is `True`, [`~pipelines.ImagePipelineOutput`] is returned, otherwise a `tuple` is
             returned where the first element is a list with the generated images
     """
-    if "mask_feature" in kwargs:
-        deprecation_message = "The use of `mask_feature` is deprecated. It is no longer used in any computation and that doesn't affect the end results. It will be removed in a future version."
-        deprecate("mask_feature", "1.0.0", deprecation_message, standard_warn=False)
     # 1. Check inputs. Raise error if not correct
     height = height or self.transformer.config.sample_size * self.vae_scale_factor
     width = width or self.transformer.config.sample_size * self.vae_scale_factor
     if use_resolution_binning:
-        if self.transformer.config.sample_size == 128:
+        if self.transformer.config.sample_size == 256:
+            aspect_ratio_bin = ASPECT_RATIO_2048_BIN
+        elif self.transformer.config.sample_size == 128:
             aspect_ratio_bin = ASPECT_RATIO_1024_BIN
         elif self.transformer.config.sample_size == 64:
             aspect_ratio_bin = ASPECT_RATIO_512_BIN
@@ -237,19 +238,6 @@ def tgate(
 
     # 6.1 Prepare micro-conditions.
     added_cond_kwargs = {"resolution": None, "aspect_ratio": None}
-    negative_cond_kwargs = {"resolution": None, "aspect_ratio": None}
-    if self.transformer.config.sample_size == 128:
-        resolution = torch.tensor([height, width]).repeat(batch_size * num_images_per_prompt, 1)
-        aspect_ratio = torch.tensor([float(height / width)]).repeat(batch_size * num_images_per_prompt, 1)
-        resolution = resolution.to(dtype=prompt_embeds.dtype, device=device)
-        aspect_ratio = aspect_ratio.to(dtype=prompt_embeds.dtype, device=device)
-
-        negative_cond_kwargs = {"resolution": resolution, "aspect_ratio": aspect_ratio}
-        if do_classifier_free_guidance:
-            resolution = torch.cat([resolution, resolution], dim=0)
-            aspect_ratio = torch.cat([aspect_ratio, aspect_ratio], dim=0)
-
-        added_cond_kwargs = {"resolution": resolution, "aspect_ratio": aspect_ratio}
 
     # 7. Denoising loop
     num_warmup_steps = max(len(timesteps) - num_inference_steps * self.scheduler.order, 0)
@@ -267,7 +255,7 @@ def tgate(
         )
     with self.progress_bar(total=num_inference_steps) as progress_bar:
         for i, t in enumerate(timesteps):
-            if do_classifier_free_guidance and i < gate_step:
+            if do_classifier_free_guidance and (i-num_warmup_steps) < gate_step:
                 latent_model_input = torch.cat([latents] * 2)
                 prompt_embeds = cfg_prompt_embeds
                 prompt_attention_mask = cfg_prompt_attention_mask
@@ -275,7 +263,6 @@ def tgate(
                 latent_model_input = latents
                 prompt_embeds = negative_prompt_embeds if do_classifier_free_guidance else prompt_embeds
                 prompt_attention_mask = negative_prompt_attention_mask if do_classifier_free_guidance else prompt_attention_mask
-                added_cond_kwargs = negative_cond_kwargs
 
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
@@ -294,6 +281,7 @@ def tgate(
             # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
             current_timestep = current_timestep.expand(latent_model_input.shape[0])
 
+            # TGATE
             if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
                 ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
                     cur_step=i-num_warmup_steps, 
@@ -309,6 +297,7 @@ def tgate(
                     sa_kward=sa_kwards,
                     keep_shape=keep_shape
                     )
+
             # predict noise model_output
             noise_pred = self.transformer(
                 latent_model_input,
@@ -331,11 +320,7 @@ def tgate(
                 noise_pred = noise_pred
 
             # compute previous image: x_t -> x_t-1
-            if num_inference_steps == 1:
-                # For DMD one step sampling: https://arxiv.org/abs/2311.18828
-                latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).pred_original_sample
-            else:
-                latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
+            latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
@@ -363,7 +348,6 @@ def tgate(
     return ImagePipelineOutput(images=image)
 
 
-def TgatePixArtAlphaLoader(pipe, **kwargs):
+def TgatePixArtSigmaLoader(pipe, **kwargs):
     pipe.tgate = MethodType(tgate,pipe)
     return pipe
-
