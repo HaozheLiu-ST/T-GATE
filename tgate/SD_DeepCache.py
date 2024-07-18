@@ -301,6 +301,10 @@ def tgate(
                 prompt_embeds = negative_prompt_embeds
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
+            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
+                self.deepcache.disable()
+                self.deepcache.enable()  
+                
             # TGATE
             if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
                 ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
@@ -356,7 +360,8 @@ def tgate(
                 if callback is not None and i % callback_steps == 0:
                     step_idx = i // getattr(self.scheduler, "order", 1)
                     callback(step_idx, t, latents)
-
+        self.deepcache.disable()
+        self.deepcache.enable()
     if not output_type == "latent":
         image = self.vae.decode(latents / self.vae.config.scaling_factor, return_dict=False, generator=generator)[
             0
@@ -384,6 +389,14 @@ def tgate(
 
 
 
-def TgateSDLoader(pipe, **kwargs):
+def TgateSDDeepCacheLoader(pipe,cache_interval=3,cache_branch_id=0):
+    from DeepCache import DeepCacheSDHelper
+    helper = DeepCacheSDHelper(pipe=pipe)
+    helper.set_params(
+        cache_interval=cache_interval,
+        cache_branch_id=cache_branch_id,
+    )
+    helper.enable()
     pipe.tgate = MethodType(tgate,pipe)
+    pipe.deepcache = helper
     return pipe

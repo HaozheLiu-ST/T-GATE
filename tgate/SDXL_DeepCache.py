@@ -419,12 +419,13 @@ def tgate(
             else:
                 latent_model_input = latents
                 prompt_embeds = negative_prompt_embeds
-                added_cond_kwargs = {"text_embeds": negative_add_text_embeds, "time_ids": negative_add_time_ids}
-            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
-                self.deepcache.disable()
-                self.deepcache.enable()            
+                added_cond_kwargs = {"text_embeds": negative_add_text_embeds, "time_ids": negative_add_time_ids}    
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
+            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
+                self.deepcache.disable()
+                self.deepcache.enable()        
+                
             # predict the noise residual
             if ip_adapter_image is not None or ip_adapter_image_embeds is not None:
                 added_cond_kwargs["image_embeds"] = image_embeds
