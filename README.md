@@ -11,7 +11,7 @@
 </a>
 </div>
 
-> **TGATE-V1: Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models**  
+> **TGATE-V1: [Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models](https://arxiv.org/abs/2404.02747v1)**  
 > [Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>&#42;</sup>&nbsp; [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1&#42;</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2&#42;</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>1,3</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>1,3</sup>&nbsp;
 > 
 > <sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp;
@@ -20,7 +20,7 @@
 >
 
 
-> **TGATE-V2: Faster Diffusion Through Temporal Attention Decomposition**  
+> **TGATE-V2: [Faster Diffusion Through Temporal Attention Decomposition](https://arxiv.org/abs/2404.02747v2)**  
 > [Haozhe Liu](https://haozheliu-st.github.io/)<sup>1,4&#42;</sup>&nbsp; [Wentian Zhang](https://wentianzhang-ml.github.io/)<sup>&#42;</sup>&nbsp; [Jinheng Xie](https://sierkinhane.github.io/)<sup>2&#42;</sup>&nbsp; [Francesco Faccio](https://scholar.google.com/citations?user=0z3DkrkAAAAJ&hl=en)<sup>1,3</sup>&nbsp; [Mengmeng Xu](https://scholar.google.com/citations?user=be_ox9QAAAAJ&hl=en)<sup>4</sup>&nbsp; [Tao Xiang](https://scholar.google.com/citations?user=MeS5d4gAAAAJ&hl=en)<sup>4</sup>&nbsp; [Mike Zheng Shou](https://scholar.google.com/citations?hl=zh-CN&user=h1-3lSoAAAAJ&view_op=list_works&sortby=pubdate)<sup>2</sup>&nbsp; [Juan-Manuel Pérez-Rúa](https://scholar.google.com/citations?user=Vbvimu4AAAAJ&hl=en)<sup>4</sup>&nbsp; [Jürgen Schmidhuber](https://scholar.google.com/citations?user=gLnCTgIAAAAJ&hl=en)<sup>1,3</sup>&nbsp;
 > 
 > <sup>1</sup> AI Initiative, King Abdullah University of Science And Technology &nbsp;
@@ -49,7 +49,9 @@
   
 ## 📄 Updates
 
-<!-- * 2024/07/18: We release TGATE [v1.0.0](https://github.com/HaozheLiu-ST/T-GATE/tree/0.1.1) to support the `PixArt-Sigma` and `StableVideoDiffusion` models. -->
+* 2024/07/19: TGATE now supports the `PixArt-Sigma` and `StableVideoDiffusion` models.
+
+* 2024/07/19: We release TGATE-V2, available with [code]() and [technical report](https://arxiv.org/abs/2404.02747v2) 
 
 * 2024/05/22: We have successfully extended TGATE to self-attention modules for greater acceleration!
 
