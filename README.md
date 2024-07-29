@@ -238,7 +238,15 @@ If you find our work inspiring or use our codebase in your research, please cons
 @article{tgate,
   title={Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models},
   author={Zhang, Wentian and Liu, Haozhe and Xie, Jinheng and Faccio, Francesco and Shou, Mike Zheng and Schmidhuber, J{\"u}rgen},
-  journal={arXiv preprint arXiv:2404.02747},
+  journal={arXiv preprint arXiv:2404.02747v1},
   year={2024}
 }
+
+@article{liu2024faster,
+  title={Faster Diffusion via Temporal Attention Decomposition},
+  author={Liu, Haozhe and Zhang, Wentian and Xie, Jinheng and Faccio, Francesco and Xu, Mengmeng and Xiang, Tao and Shou, Mike Zheng and Perez-Rua, Juan-Manuel and Schmidhuber, J{\"u}rgen},
+  journal={arXiv preprint arXiv:2404.02747v2},
+  year={2024}
+}
+
 ```
