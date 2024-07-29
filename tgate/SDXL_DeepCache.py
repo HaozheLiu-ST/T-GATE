@@ -1,5 +1,5 @@
 from types import MethodType
-from .tgate_utils import register_tgate_forward
+from .tgate_utils import register_forward, tgate_scheduler
 import torch
 import torch.nn.functional as F
 from diffusers.image_processor import PipelineImageInput, VaeImageProcessor
@@ -70,6 +70,9 @@ def tgate(
     callback_on_step_end: Optional[Callable[[int, int, Dict], None]] = None,
     callback_on_step_end_tensor_inputs: List[str] = ["latents"],
     gate_step : int = 10,
+    sa_interval: int = 1,
+    ca_interval: int = 1,
+    warm_up: int = 0,
     **kwargs,
 ):
     r"""
@@ -203,6 +206,9 @@ def tgate(
             will be passed as `callback_kwargs` argument. You will only be able to include variables listed in the
             `._callback_tensor_inputs` attribute of your pipeline class.
         gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
+        sa_interval (`int` defaults to 1): The time-step interval to cache self attention before gate_step.
+        ca_interval (`int` defaults to 1): The time-step interval to cache cross attention after gate_step .
+        warm_up (`int` defaults to 0): The time step to warm up the model inference.
     Examples:
 
     Returns:
@@ -387,6 +393,19 @@ def tgate(
         ).to(device=device, dtype=latents.dtype)
 
     self._num_timesteps = len(timesteps)
+
+    register_forward(self.unet, 
+        'Attention',
+        ca_kward = {
+            'cache': False,
+            'reuse': False,
+        },
+        sa_kward = {
+            'cache': False,
+            'reuse': False,
+        },
+        keep_shape=True
+        )
     with self.progress_bar(total=num_inference_steps) as progress_bar:
         for i, t in enumerate(timesteps):
             if self.interrupt:
@@ -400,23 +419,36 @@ def tgate(
             else:
                 latent_model_input = latents
                 prompt_embeds = negative_prompt_embeds
-                added_cond_kwargs = {"text_embeds": negative_add_text_embeds, "time_ids": negative_add_time_ids}
-            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
-                self.deepcache.disable()
-                self.deepcache.enable()            
+                added_cond_kwargs = {"text_embeds": negative_add_text_embeds, "time_ids": negative_add_time_ids}    
             latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
+            if (i-num_warmup_steps) == gate_step or (i-num_warmup_steps) == gate_step-1:
+                self.deepcache.disable()
+                self.deepcache.enable()        
+                
             # predict the noise residual
             if ip_adapter_image is not None or ip_adapter_image_embeds is not None:
                 added_cond_kwargs["image_embeds"] = image_embeds
             
             # TGATE
             if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
-                register_tgate_forward(self.unet, 
-                    'Attention',
+
+                ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
+                    cur_step=i-num_warmup_steps, 
                     gate_step=gate_step,
-                    inference_num_per_image = num_inference_steps, 
-                    cur_step=i+1-num_warmup_steps,
+                    sa_interval=sa_interval,
+                    ca_interval=ca_interval,
+                    warm_up=warm_up
+                )
+                sa_kward = {
+                    'cache': False,
+                    'reuse': False,
+                }
+                register_forward(self.unet, 
+                    'Attention',
+                    ca_kward=ca_kwards,
+                    sa_kward=sa_kwards,
+                    keep_shape=keep_shape
                     )
 
             noise_pred = self.unet(
@@ -533,4 +565,3 @@ def TgateSDXLDeepCacheLoader(pipe,cache_interval=3,cache_branch_id=0):
     pipe.tgate = MethodType(tgate,pipe)
     pipe.deepcache = helper
     return pipe
-
