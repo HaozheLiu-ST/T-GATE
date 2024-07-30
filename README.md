@@ -3,7 +3,7 @@
     <a href="https://github.com/HaozheLiu-ST/T-GATE/blob/main/LICENSE">
     <img alt="GitHub" src="https://img.shields.io/github/license/HaozheLiu-ST/T-GATE.svg?color=blue"> 
 </a>
-<a href="https://arxiv.org/abs/2404.02747">
+<a href="https://arxiv.org/abs/2404.02747v1">
   <img alt="arxiv" src="https://img.shields.io/badge/arXiv-<2404.02747v1>-<COLOR>.svg">
 </a>
 <a href="https://github.com/HaozheLiu-ST/T-GATE/releases">
