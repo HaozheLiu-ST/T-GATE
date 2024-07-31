@@ -42,16 +42,16 @@ def parse_args():
         help="When re-using the cross-attention",
     )
     parser.add_argument(
-        '--sa_interval',
+        '--sp_interval',
         type=int,
         default=5,
-        help="The time step to stop calculating the cross attention.",
+        help="The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).",
     )
     parser.add_argument(
-        '--ca_interval',
+        '--fi_interval',
         type=int,
         default=1,
-        help="The time-step interval to cache cross attention",
+        help="The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).",
     )
     parser.add_argument(
         '--warm_up',
@@ -104,8 +104,8 @@ if __name__ == '__main__':
         image = pipe.tgate(
             prompt=args.prompt,
             gate_step=args.gate_step,
-            sa_interval=args.sa_interval if not args.deepcache else 1,
-            ca_interval=args.ca_interval,
+            sp_interval=args.sp_interval if not args.deepcache else 1,
+            fi_interval=args.fi_interval,
             warm_up=args.warm_up if not args.deepcache else 0,
             num_inference_steps=args.inference_step,
         ).images[0]
@@ -129,8 +129,8 @@ if __name__ == '__main__':
         image = pipe.tgate(
             prompt=args.prompt, 
             gate_step=args.gate_step,
-            sa_interval=1,
-            ca_interval=args.ca_interval,
+            sp_interval=1,
+            fi_interval=args.fi_interval,
             warm_up=0, 
             num_inference_steps=args.inference_step,
             lcm=True,
@@ -147,8 +147,8 @@ if __name__ == '__main__':
         image = pipe.tgate(
             prompt=args.prompt,
             gate_step=args.gate_step,
-            sa_interval=args.sa_interval,
-            ca_interval=args.ca_interval,
+            sp_interval=args.sp_interval,
+            fi_interval=args.fi_interval,
             warm_up=args.warm_up,   
             num_inference_steps=args.inference_step,
         ).images[0]
@@ -164,8 +164,8 @@ if __name__ == '__main__':
         image = pipe.tgate(
             args.prompt,
             gate_step=args.gate_step,
-            sa_interval=1,
-            ca_interval=args.ca_interval,
+            sp_interval=1,
+            fi_interval=args.fi_interval,
             warm_up=0,
             num_inference_steps=args.inference_step,
             lcm=True,
@@ -183,8 +183,8 @@ if __name__ == '__main__':
         image = pipe.tgate(
             prompt=args.prompt,
             gate_step=args.gate_step,
-            sa_interval=args.sa_interval,
-            ca_interval=args.ca_interval,
+            sp_interval=args.sp_interval,
+            fi_interval=args.fi_interval,
             warm_up=args.warm_up,   
             num_inference_steps=args.inference_step,
         ).images[0]
@@ -205,8 +205,8 @@ if __name__ == '__main__':
             gate_step=args.gate_step,
             num_inference_steps=args.inference_step,
             warm_up=args.warm_up,
-            sa_interval=args.sa_interval,
-            ca_interval=args.ca_interval,
+            sp_interval=args.sp_interval,
+            fi_interval=args.fi_interval,
             num_frames=25,
             decode_chunk_size=8, 
         ).frames[0]
