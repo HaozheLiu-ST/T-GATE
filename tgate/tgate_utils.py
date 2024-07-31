@@ -256,8 +256,8 @@ def tgate_processor(
 def tgate_scheduler(
     cur_step: int = None, 
     gate_step: int = 10, 
-    sa_interval: int = 5,
-    ca_interval: int = 1,
+    sp_interval: int = 5,
+    fi_interval: int = 1,
     warm_up: int = 2,
 ):
     r"""
@@ -268,10 +268,10 @@ def tgate_scheduler(
             The current time step. 
         gate_step (`int` defaults to 10): 
             The time step to stop calculating the cross attention.
-        sa_interval (`int` defaults to 5): 
-            The time-step interval to cache self attention before gate_step.
-        ca_interval (`int` defaults to 1): 
-            The time-step interval to cache cross attention after gate_step .
+        sp_interval (`int` defaults to 5): 
+            The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).
+        fi_interval (`int` defaults to 1): 
+            The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).
         warm_up (`int` defaults to 2): 
             The time step to warm up the model inference.
 
@@ -300,7 +300,7 @@ def tgate_scheduler(
                 'reuse': False,
             }   
         else:
-            if cur_step % sa_interval == 0:
+            if cur_step % sp_interval == 0:
                 sa_kwards = {
                     'cache': True,
                     'reuse': False,
@@ -328,7 +328,7 @@ def tgate_scheduler(
             'cache': False,
             'reuse': True,
         }
-        if cur_step % ca_interval == 0:
+        if cur_step % fi_interval == 0:
             sa_kwards = {
                 'cache':True,
                 'reuse':False

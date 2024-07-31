@@ -57,8 +57,8 @@ def tgate(
     use_resolution_binning: bool = True,
     max_sequence_length: int = 300,
     gate_step: int = 10,
-    sa_interval: int = 5,
-    ca_interval: int = 1,
+    sp_interval: int = 5,
+    fi_interval: int = 1,
     warm_up: int = 2,
     lcm: bool = False,
     **kwargs,
@@ -137,8 +137,8 @@ def tgate(
             the requested resolution. Useful for generating non-square images.
         max_sequence_length (`int` defaults to 300): Maximum sequence length to use with the `prompt`.
         gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
-        sa_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step.
-        ca_interval (`int` defaults to 1): The time-step interval to cache cross attention after gate_step .
+        sp_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).
+        fi_interval (`int` defaults to 1): The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).
         warm_up (`int` defaults to 2): The time step to warm up the model inference.
         lcm (`bool` defaults to False): If the latent consistency model is used as the transformer.
     Examples:
@@ -241,7 +241,7 @@ def tgate(
 
     # 7. Denoising loop
     num_warmup_steps = max(len(timesteps) - num_inference_steps * self.scheduler.order, 0)
-    register_forward(self.transformer, 
+    register_forward(self.transformer,
         'Attention',
         ca_kward = {
             'cache': False,
@@ -284,14 +284,14 @@ def tgate(
             # TGATE
             if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
                 ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
-                    cur_step=i-num_warmup_steps, 
+                    cur_step=i-num_warmup_steps,
                     gate_step=gate_step,
-                    sa_interval=sa_interval,
-                    ca_interval=ca_interval,
+                    sp_interval=sp_interval,
+                    fi_interval=fi_interval,
                     warm_up=warm_up
                 )
                 keep_shape = keep_shape if not lcm else lcm
-                register_forward(self.transformer, 
+                register_forward(self.transformer,
                     'Attention',
                     ca_kward=ca_kwards,
                     sa_kward=sa_kwards,
@@ -351,3 +351,4 @@ def tgate(
 def TgatePixArtSigmaLoader(pipe, **kwargs):
     pipe.tgate = MethodType(tgate,pipe)
     return pipe
+
