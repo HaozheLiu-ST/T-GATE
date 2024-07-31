@@ -154,8 +154,8 @@ python main.py \
 --prompt 'Astronaut in a jungle, cold color palette, muted colors, detailed, 8k' \
 --model 'sdxl' \
 --gate_step 10 \
---sa_interval 5 \
---ca_interval 1 \
+--sp_interval 5 \
+--fi_interval 1 \
 --warm_up 2 \
 --saved_path './generated_tmp/sd_xl/' \
 --inference_step 25 \
@@ -169,8 +169,8 @@ python main.py \
 --prompt 'An alpaca made of colorful building blocks, cyberpunk.' \
 --model 'pixart_alpha' \
 --gate_step 15 \
---sa_interval 3 \
---ca_interval 1 \
+--sp_interval 3 \
+--fi_interval 1 \
 --warm_up 2 \
 --saved_path './generated_tmp/pixart_alpha/' \
 --inference_step 25 \
@@ -183,8 +183,8 @@ python main.py \
 --prompt 'an astronaut sitting in a diner, eating fries, cinematic, analog film.' \
 --model 'pixart_sigma' \
 --gate_step 15 \
---sa_interval 3 \
---ca_interval 1 \
+--sp_interval 3 \
+--fi_interval 1 \
 --warm_up 2 \
 --saved_path './generated_tmp/pixart_sigma/' \
 --inference_step 25 \
@@ -197,8 +197,8 @@ python main.py \
 --prompt 'Self-portrait oil painting, a beautiful cyborg with golden hair, 8k' \
 --model 'lcm_sdxl' \
 --gate_step 1 \
---sa_interval 1 \
---ca_interval 1 \
+--sp_interval 1 \
+--fi_interval 1 \
 --warm_up 0 \
 --saved_path './generated_tmp/lcm_sdxl/' \
 --inference_step 4 \
@@ -212,8 +212,8 @@ python main.py \
 --prompt 'A haunted Victorian mansion under a full moon.' \
 --model 'sdxl' \
 --gate_step 10 \
---sa_interval 1 \
---ca_interval 1 \
+--sp_interval 1 \
+--fi_interval 1 \
 --warm_up 0 \
 --saved_path './generated_tmp/sd_xl_deepcache/' \
 --inference_step 25 \
@@ -238,7 +238,15 @@ If you find our work inspiring or use our codebase in your research, please cons
 @article{tgate,
   title={Cross-Attention Makes Inference Cumbersome in Text-to-Image Diffusion Models},
   author={Zhang, Wentian and Liu, Haozhe and Xie, Jinheng and Faccio, Francesco and Shou, Mike Zheng and Schmidhuber, J{\"u}rgen},
-  journal={arXiv preprint arXiv:2404.02747},
+  journal={arXiv preprint arXiv:2404.02747v1},
   year={2024}
 }
+
+@article{liu2024faster,
+  title={Faster Diffusion via Temporal Attention Decomposition},
+  author={Liu, Haozhe and Zhang, Wentian and Xie, Jinheng and Faccio, Francesco and Xu, Mengmeng and Xiang, Tao and Shou, Mike Zheng and Perez-Rua, Juan-Manuel and Schmidhuber, J{\"u}rgen},
+  journal={arXiv preprint arXiv:2404.02747v2},
+  year={2024}
+}
+
 ```
