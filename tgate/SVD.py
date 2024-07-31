@@ -48,9 +48,9 @@ def tgate(
     callback_on_step_end_tensor_inputs: List[str] = ["latents"],
     return_dict: bool = True,
     gate_step: int = 10,
-    sa_interval: int = 1,
-    ca_interval: int = 1,
-    warm_up: int = 0,
+    sp_interval: int = 5,
+    fi_interval: int = 1,
+    warm_up: int = 2,
 ):
     r"""
     The call function to the pipeline for generation.
@@ -115,8 +115,8 @@ def tgate(
             Whether or not to return a [`~pipelines.stable_diffusion.StableDiffusionPipelineOutput`] instead of a
             plain tuple.
         gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
-        sa_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step.
-        ca_interval (`int` defaults to 1): The time-step interval to cache cross attention after gate_step .
+        sp_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).
+        fi_interval (`int` defaults to 1): The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).
         warm_up (`int` defaults to 2): The time step to warm up the model inference.
 
     Examples:
@@ -278,8 +278,8 @@ def tgate(
                 ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
                     cur_step=i-num_warmup_steps, 
                     gate_step=gate_step,
-                    sa_interval=sa_interval,
-                    ca_interval=ca_interval,
+                    sp_interval=sp_interval,
+                    fi_interval=fi_interval,
                     warm_up=warm_up
                 )
                 register_forward(self.unet, 

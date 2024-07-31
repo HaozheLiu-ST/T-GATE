@@ -52,8 +52,8 @@ def tgate(
     ] = None,
     callback_on_step_end_tensor_inputs: List[str] = ["latents"],
     gate_step: int = 10,
-    pre_interval: int = 5,
-    post_interval: int = 1,
+    sp_interval: int = 5,
+    fi_interval: int = 1,
     warm_up: int = 2,
     **kwargs,
 
@@ -134,8 +134,8 @@ def tgate(
             will be passed as `callback_kwargs` argument. You will only be able to include variables listed in the
             `._callback_tensor_inputs` attribute of your pipeline class.
         gate_step (`int` defaults to 10): The time step to stop calculating the cross attention.
-        sa_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step.
-        ca_interval (`int` defaults to 1): The time-step interval to cache cross attention after gate_step .
+        sp_interval (`int` defaults to 5): The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).
+        fi_interval (`int` defaults to 1): The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).
         warm_up (`int` defaults to 2): The time step to warm up the model inference.
 
     Examples:
@@ -306,8 +306,8 @@ def tgate(
                 ca_kwards,sa_kwards,keep_shape=tgate_scheduler(
                     cur_step=i-num_warmup_steps, 
                     gate_step=gate_step,
-                    pre_interval=pre_interval,
-                    post_interval=post_interval,
+                    sp_interval=sp_interval,
+                    fi_interval=fi_interval,
                     warm_up=warm_up
                 )
                 register_forward(self.unet, 
