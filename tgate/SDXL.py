@@ -2,6 +2,7 @@ from types import MethodType
 from .tgate_utils import register_forward, tgate_scheduler
 import torch
 import torch.nn.functional as F
+from diffusers.callbacks import MultiPipelineCallbacks, PipelineCallback
 from diffusers.image_processor import PipelineImageInput, VaeImageProcessor
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
