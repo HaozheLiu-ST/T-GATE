@@ -9,13 +9,12 @@ import inspect
 from typing import Callable, List, Optional, Tuple, Union
 logger = logging.get_logger(__name__) 
 
-def register_tgate_forward(
+def register_forward(
     model, 
     filter_name: str = 'Attention', 
-    gate_step: int = 10,
-    inference_num_per_image: int = 25,
-    lcm: bool = False,
-    cur_step: int = None,
+    keep_shape: bool = True,
+    sa_kward: dict = None,
+    ca_kward: dict = None,
     **kwargs,
 ):
     """
@@ -27,12 +26,12 @@ def register_tgate_forward(
             A diffusion model contains cross attention layers.
         filter_name (`str`):
             The name to filter the selected layer.
-        gate_step (`int`):
-            The time step to stop calculating the cross attention.
-        inference_num_per_image (`int`):
-            The total inference steps for generating one image.
-        lcm (`bool`):
-            whether or not the latent consistency model is used.
+        keep_shape (`bool`):
+            Whether or not to remain the shape of hidden features
+        sa_kward: (`dict`):
+            A kwargs dictionary to pass along to the self attention for caching and reusing. 
+        ca_kward: (`dict`):
+            A kwargs dictionary to pass along to the cross attention for caching and reusing. 
 
     Returns:
         count (`int`): The number of the cross attention layers used in the given model.
@@ -41,20 +40,20 @@ def register_tgate_forward(
     count = 0
     def warp_custom(
         self: torch.nn.Module,
-        gate_step: int = None,
-        inference_num_per_image: int = None,
-        lcm: bool = False,
-        cur_step: int = None,
+        keep_shape:bool = True,
+        ca_kward: dict = None,
+        sa_kward: dict = None,
         **kwargs,
-    ):          
+    ):
         def forward(
             hidden_states: torch.FloatTensor,
             encoder_hidden_states: Optional[torch.FloatTensor] = None,
             attention_mask: Optional[torch.FloatTensor] = None,
-            gate_step = gate_step,
-            inference_num_per_image = inference_num_per_image,
-            lcm = lcm,
-            cur_step = cur_step,
+            keep_shape = keep_shape,
+            ca_cache = ca_kward['cache'],
+            sa_cache = sa_kward['cache'],
+            ca_reuse = ca_kward['reuse'],
+            sa_reuse = sa_kward['reuse'],
             **cross_attention_kwargs,
         ) -> torch.Tensor:
             r"""
@@ -67,12 +66,6 @@ def register_tgate_forward(
                     The hidden states of the encoder.
                 attention_mask (`torch.Tensor`, *optional*):
                     The attention mask to use. If `None`, no mask is applied.
-                gate_step (`int`):
-                    The time step to stop calculating the cross attention.
-                inference_num_per_image (`int`):
-                    The total inference steps for generating one image.
-                lcm (`bool`):
-                    whether or not the latent consistency model is used.
                 **cross_attention_kwargs:
                     Additional keyword arguments to pass along to the cross attention.
 
@@ -82,23 +75,17 @@ def register_tgate_forward(
             # The `Attention` class can call different attention processors / attention functions
             # here we simply pass along all tensors to the selected processor class
             # For standard processors that are defined here, `**cross_attention_kwargs` is empty
-            if not hasattr(self,'cur_step'):
-                self.cur_step = 1
-            else:
-                if cur_step != None:
-                    self.cur_step = cur_step
-                else:
-                    self.cur_step =   (self.cur_step + 1) % inference_num_per_image
-
 
             if not hasattr(self,'cache'):
                 self.cache = None
             attn_parameters = set(inspect.signature(self.processor.__call__).parameters.keys())
             unused_kwargs = [k for k, _ in cross_attention_kwargs.items() if k not in attn_parameters]
+            
             if len(unused_kwargs) > 0:
                 logger.warning(
                     f"cross_attention_kwargs {unused_kwargs} are not expected by {self.processor.__class__.__name__} and will be ignored."
                 )
+            
             cross_attention_kwargs = {k: w for k, w in cross_attention_kwargs.items() if k in attn_parameters}
             
             hidden_states, cache =  tgate_processor(
@@ -106,13 +93,15 @@ def register_tgate_forward(
                 hidden_states,
                 encoder_hidden_states=encoder_hidden_states,
                 attention_mask=attention_mask,
-                gate_step=gate_step,
-                cur_step = self.cur_step,
+                keep_shape = keep_shape,
                 cache = self.cache,
-                lcm = lcm,
+                ca_cache = ca_cache,
+                sa_cache = sa_cache,
+                ca_reuse = ca_reuse,
+                sa_reuse = sa_reuse,
                 **cross_attention_kwargs,
             )
-            if gate_step == self.cur_step:
+            if cache != None:
                 self.cache = cache
             return hidden_states
         return forward
@@ -120,53 +109,72 @@ def register_tgate_forward(
     def register_recr(
         net: torch.nn.Module, 
         count: int = None, 
-        gate_step: int = None, 
-        inference_num_per_image: int = None,
-        lcm: bool = False,
-        cur_step:int = None
+        keep_shape:bool = True, 
+        ca_kward:dict = None,
+        sa_kward:dict = None
     ):
         if net.__class__.__name__ == filter_name:
-            net.forward = warp_custom(net, gate_step=gate_step, inference_num_per_image=inference_num_per_image, lcm=lcm, cur_step=cur_step)
+            net.forward = warp_custom(net, keep_shape = keep_shape, ca_kward = ca_kward,sa_kward = sa_kward)
             return count + 1
         elif hasattr(net, 'children'):
             for net_child in net.children():
-                count = register_recr(net_child, count, gate_step=gate_step, inference_num_per_image=inference_num_per_image, lcm=lcm,cur_step=cur_step)
+                count = register_recr(net_child, count, keep_shape = keep_shape, ca_kward = ca_kward,sa_kward = sa_kward)
         return count
 
-    return register_recr(model, count, gate_step=gate_step, inference_num_per_image=inference_num_per_image, lcm=lcm,cur_step=cur_step) 
-
-
+    return register_recr(model, count, keep_shape = keep_shape, ca_kward = ca_kward,sa_kward = sa_kward) 
 
 
 def tgate_processor(
-    attn =None,
+    attn = None,
     hidden_states = None,
     encoder_hidden_states = None,
     attention_mask  = None,
     temb  = None,
-    gate_step=None,
-    cur_step = None,
     cache = None,
-    lcm = False,
+    keep_shape = True,
+    ca_cache = False,
+    sa_cache = False,
+    ca_reuse = False,
+    sa_reuse = False,
     *args,
     **kwargs,
 ) -> torch.FloatTensor:
 
+    r"""
+    A customized forward function of the `AttnProcessor2_0` class.
+
+    Args:
+        hidden_states (`torch.Tensor`):
+            The hidden states of the query.
+        encoder_hidden_states (`torch.Tensor`, *optional*):
+            The hidden states of the encoder.
+        attention_mask (`torch.Tensor`, *optional*):
+            The attention mask to use. If `None`, no mask is applied.
+        **cross_attention_kwargs:
+            Additional keyword arguments to pass along to the cross attention.
+
+    Returns:
+        `torch.Tensor`: The output of the attention layer.
+    """
+
     if not hasattr(F, "scaled_dot_product_attention"):
-        raise ImportError(
-            "AttnAddedKVProcessor2_0 requires PyTorch 2.0, to use it, please upgrade PyTorch to 2.0."
-        )
+        raise ImportError("AttnProcessor2_0 requires PyTorch 2.0, to use it, please upgrade PyTorch to 2.0.")
+
     if len(args) > 0 or kwargs.get("scale", None) is not None:
         deprecation_message = "The `scale` argument is deprecated and will be ignored. Please remove it, as passing it will raise an error in the future. `scale` should directly be passed while calling the underlying pipeline component i.e., via `cross_attention_kwargs`."
         deprecate("scale", "1.0.0", deprecation_message)
+
     residual = hidden_states
 
     cross_attn = encoder_hidden_states is not None
+    self_attn =  encoder_hidden_states is None
 
     input_ndim = hidden_states.ndim
 
     # if the attention is cross-attention or self-attention
-    if cross_attn and (gate_step<cur_step):
+    if cross_attn and ca_reuse and cache != None:
+        hidden_states = cache
+    elif self_attn and sa_reuse and cache != None:
         hidden_states = cache
     else:
 
@@ -210,7 +218,6 @@ def tgate_processor(
 
         # the output of sdp = (batch, num_heads, seq_len, head_dim)
         # TODO: add support for attn.scale when we move to Torch 2.1
-
         hidden_states = F.scaled_dot_product_attention(
             query, key, value, attn_mask=attention_mask, dropout_p=0.0, is_causal=False
         )
@@ -223,9 +230,8 @@ def tgate_processor(
         # dropout
         hidden_states = attn.to_out[1](hidden_states)
 
-
-        if cross_attn and (gate_step == cur_step):
-            if lcm:
+        if (cross_attn and ca_cache) or (self_attn and sa_cache):
+            if keep_shape:
                 cache = hidden_states
             else:
                 hidden_uncond, hidden_pred_text = hidden_states.chunk(2)
@@ -243,3 +249,94 @@ def tgate_processor(
 
     return hidden_states, cache
 
+
+
+
+
+def tgate_scheduler(
+    cur_step: int = None, 
+    gate_step: int = 10, 
+    sp_interval: int = 5,
+    fi_interval: int = 1,
+    warm_up: int = 2,
+):
+    r"""
+    The T-GATE scheduler function 
+
+    Args:
+        cur_step (`int`):
+            The current time step. 
+        gate_step (`int` defaults to 10): 
+            The time step to stop calculating the cross attention.
+        sp_interval (`int` defaults to 5): 
+            The time-step interval to cache self attention before gate_step (Semantics-Planning Phase).
+        fi_interval (`int` defaults to 1): 
+            The time-step interval to cache self attention after gate_step (Fidelity-Improving Phase).
+        warm_up (`int` defaults to 2): 
+            The time step to warm up the model inference.
+
+    Returns:
+        ca_kward: (`dict`):
+            A kwargs dictionary to pass along to the cross attention for caching and reusing. 
+        sa_kward: (`dict`):
+            A kwargs dictionary to pass along to the self attention for caching and reusing. 
+        keep_shape (`bool`):
+            Whether or not to remain the shape of hidden features
+    """
+    if cur_step < gate_step-1:
+        # Semantics-Planning Stage
+        ca_kwards = {
+            'cache': False,
+            'reuse': False,
+        }
+        if cur_step < warm_up:
+            sa_kwards = {
+                'cache': False,
+                'reuse': False,
+            }
+        elif cur_step == warm_up:
+            sa_kwards = {
+                'cache': True,
+                'reuse': False,
+            }   
+        else:
+            if cur_step % sp_interval == 0:
+                sa_kwards = {
+                    'cache': True,
+                    'reuse': False,
+                }
+            else:
+                sa_kwards = {
+                    'cache': False,
+                    'reuse': True,
+                }
+        keep_shape = True
+    
+    elif cur_step == gate_step-1:
+        ca_kwards = {
+            'cache': True,
+            'reuse': False,
+        }
+        sa_kwards = {
+            'cache':True,
+            'reuse':False
+        }
+        keep_shape = False
+    else:
+        # Fidelity-Improving Stage
+        ca_kwards = {
+            'cache': False,
+            'reuse': True,
+        }
+        if cur_step % fi_interval == 0:
+            sa_kwards = {
+                'cache':True,
+                'reuse':False
+            }
+        else:
+            sa_kwards = {
+                'cache':False,
+                'reuse':True
+            }
+        keep_shape = True
+    return ca_kwards, sa_kwards, keep_shape
