@@ -242,7 +242,7 @@ def tgate(
     # 7. Denoising loop
     num_warmup_steps = max(len(timesteps) - num_inference_steps * self.scheduler.order, 0)
     register_forward(self.transformer,
-        'Attention',
+        'IPAdapterAttnProcessor2_0',
         ca_kward = {
             'cache': False,
             'reuse': False,
@@ -292,7 +292,7 @@ def tgate(
                 )
                 keep_shape = keep_shape if not lcm else lcm
                 register_forward(self.transformer,
-                    'Attention',
+                    'IPAdapterAttnProcessor2_0',
                     ca_kward=ca_kwards,
                     sa_kward=sa_kwards,
                     keep_shape=keep_shape
