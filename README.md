@@ -49,6 +49,8 @@
   
 ## 📄 Updates
 
+* 2025/02/26: TGATE is accepted by TMLR: https://openreview.net/forum?id=xXs2GKXPnH
+
 * 2024/07/19: TGATE now supports the `PixArt-Sigma` and `StableVideoDiffusion` models.
 
 * 2024/07/19: We release TGATE-V2, available with [code]() and [technical report](https://arxiv.org/abs/2404.02747v2) 
@@ -245,8 +247,9 @@ If you find our work inspiring or use our codebase in your research, please cons
 @article{liu2024faster,
   title={Faster Diffusion via Temporal Attention Decomposition},
   author={Liu, Haozhe and Zhang, Wentian and Xie, Jinheng and Faccio, Francesco and Xu, Mengmeng and Xiang, Tao and Shou, Mike Zheng and Perez-Rua, Juan-Manuel and Schmidhuber, J{\"u}rgen},
-  journal={arXiv preprint arXiv:2404.02747v2},
-  year={2024}
+  journal={Transactions on Machine Learning Research},
+  url={https://openreview.net/forum?id=xXs2GKXPnH},
+  year={2025}
 }
 
 ```
