@@ -417,7 +417,7 @@ def tgate(
     self._num_timesteps = len(timesteps)
 
     register_forward(self.unet, 
-        'Attention',
+        'IPAdapterAttnProcessor2_0',
         ca_kward = {
             'cache': False,
             'reuse': False,
@@ -460,7 +460,7 @@ def tgate(
                 )
                 keep_shape = keep_shape if not lcm else lcm
                 register_forward(self.unet, 
-                    'Attention',
+                    'IPAdapterAttnProcessor2_0',
                     ca_kward=ca_kwards,
                     sa_kward=sa_kwards,
                     keep_shape=keep_shape

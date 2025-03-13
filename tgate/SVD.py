@@ -244,7 +244,7 @@ def tgate(
     num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
 
     register_forward(self.unet, 
-        'Attention',
+        'IPAdapterAttnProcessor2_0',
         ca_kward = {
             'cache': False,
             'reuse': False,
